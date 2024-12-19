@@ -1,4 +1,5 @@
 import { writeFile } from "node:fs/promises";
+import path from "node:path";
 import * as ts from "typescript";
 
 const defaultCompilerOptions: ts.CompilerOptions = {
@@ -6,6 +7,9 @@ const defaultCompilerOptions: ts.CompilerOptions = {
 	module: ts.ModuleKind.ES2022,
 	moduleResolution: ts.ModuleResolutionKind.Node16,
 };
+
+/** Print out the source of the given node for debugging purposes */
+function getNodeSource(program: ts.Program, node: ts.Node) {}
 
 export async function createParsers(
 	fileNames: string[],
@@ -24,7 +28,11 @@ export async function createParsers(
 	// https://github.com/microsoft/TypeScript/wiki/Using-the-Compiler-API#traversing-the-ast-with-a-little-linter
 
 	const outFiles: string[] = [];
-	program.getSourceFiles().forEach(async (sourceFile) => {
+	const sourceFiles = program
+		.getSourceFiles()
+		.filter((s) => fileNames.includes(path.resolve(s.fileName)));
+
+	sourceFiles.forEach(async (sourceFile) => {
 		if (!sourceFile.isDeclarationFile) {
 			console.error(
 				`Error: ${sourceFile.fileName} is not a declaration file. Skipping.`,
@@ -35,23 +43,24 @@ export async function createParsers(
 		ts.forEachChild(sourceFile, visit);
 
 		async function visit(node: ts.Node) {
-			if (ts.isInterfaceDeclaration(node)) {
-				const symbol = checker.getSymbolAtLocation(node.name);
-				if (!symbol) {
-					throw new Error(`Could not find symbol for ${node.name.getText()}`);
-				}
+			console.log(node.kind, ts.SyntaxKind[node.kind]);
+			// if (ts.isTypeAliasDeclaration(node)) {
+			// 	const symbol = checker.getSymbolAtLocation(node.name);
+			// 	if (!symbol) {
+			// 		throw new Error(`Could not find symbol for ${node.name.getText()}`);
+			// 	}
 
-				const type = checker.getDeclaredTypeOfSymbol(symbol);
-				const properties = type.getProperties();
+			// 	const type = checker.getDeclaredTypeOfSymbol(symbol);
+			// 	const properties = type.getProperties();
 
-				for (const property of properties) {
-					const propertyType = checker.getTypeOfSymbolAtLocation(
-						property,
-						node,
-					);
-					// console.log(property.name, propertyType);
-				}
-			}
+			// 	for (const property of properties) {
+			// 		const propertyType = checker.getTypeOfSymbolAtLocation(
+			// 			property,
+			// 			node,
+			// 		);
+			// 		console.log(property.name, propertyType);
+			// 	}
+			// }
 
 			ts.forEachChild(node, visit);
 		}
