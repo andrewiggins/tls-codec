@@ -5,14 +5,27 @@
   "description": "Generate serializers and deserializers from TypeScript definitions for the protocol defined in the TLS and MLS specs",
   "main": "dist/src/index.js",
   "bin": "dist/bin/tls-codec",
+  "exports": {
+    ".": {
+      "import": "./dist/src/index.js",
+      "types": "./dist/src/index.d.ts"
+    },
+    "./bin": {
+      "import": "./dist/bin/tls-codec.js"
+    },
+    "./types": {
+      "types": "./dist/src/types.d.ts"
+    }
+  },
   "files": [
     "dist/src",
     "dist/bin"
   ],
   "scripts": {
-    "tsc": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "tsc": "tsc -p tsconfig.json && tsc -p test/tsconfig.json",
     "format": "prettier --write .",
-    "test": "uvu dist/test"
+    "test": "tsm node_modules/uvu/bin.js tests .test.ts"
   },
   "repository": {
     "type": "git",
@@ -30,6 +43,7 @@
   "devDependencies": {
     "@types/node": "^22.10.2",
     "prettier": "^3.4.2",
+    "tsm": "^2.3.0",
     "uvu": "^0.5.6"
   },
   "volta": {

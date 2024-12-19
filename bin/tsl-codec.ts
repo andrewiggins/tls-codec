@@ -1,6 +1,5 @@
-import { readFileSync, writeFileSync } from "node:fs";
 import { parseArgs } from "node:util";
-import { createParserSrc } from "../src/index.js";
+import { createParsers } from "../src/index.js";
 
 const args = parseArgs({
 	allowPositionals: true,
@@ -23,11 +22,6 @@ for (let filePath of args.positionals) {
 
 // Run compiler
 
-for (let inFilePath of args.positionals) {
-	const outFilePath = inFilePath.replace(/\.d\.ts$/, ".parser.ts");
+// https://github.com/microsoft/TypeScript/wiki/Using-the-Compiler-API#writing-an-incremental-program-watcher
 
-	console.log(`Processing ${inFilePath}`);
-	const src = readFileSync(inFilePath, "utf-8");
-	const newSrc = createParserSrc(src);
-	writeFileSync(outFilePath, newSrc);
-}
+createParsers(args.positionals);
