@@ -1,0 +1,38 @@
+{
+  "name": "tls-codec",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Generate serializers and deserializers from TypeScript definitions for the protocol defined in the TLS and MLS specs",
+  "main": "dist/src/index.js",
+  "bin": "dist/bin/tls-codec",
+  "files": [
+    "dist/src",
+    "dist/bin"
+  ],
+  "scripts": {
+    "tsc": "tsc -p tsconfig.json",
+    "format": "prettier --write .",
+    "test": "uvu dist/test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrewiggins/tls-codec.git"
+  },
+  "author": "Andre Wiggins",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andrewiggins/tls-codec/issues"
+  },
+  "homepage": "https://github.com/andrewiggins/tls-codec#readme",
+  "dependencies": {
+    "typescript": "^5.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "prettier": "^3.4.2",
+    "uvu": "^0.5.6"
+  },
+  "volta": {
+    "node": "22.12.0"
+  }
+}
